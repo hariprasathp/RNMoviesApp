@@ -13,7 +13,7 @@ export const MovieCard: React.FC<IProps> = ({item}: IProps) => {
             <View style={{flexDirection:'column', flex:1}}>
                 <Text category='h6'>{item.title}</Text>
                 <Text category='s2'>Released on {new Date(item.release_date * 1000).toLocaleString()}</Text>
-                <Text category='s1'>{item.overview}</Text>
+                <Text category='s1' style={{padding: 5}}>{item.overview}</Text>
             </View>
         </View>
     )
