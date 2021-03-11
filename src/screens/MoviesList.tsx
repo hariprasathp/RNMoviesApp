@@ -1,37 +1,38 @@
-import React from 'react';
-import { Dimensions, ImageBackground, StyleSheet, View, ListRenderItemInfo } from 'react-native';
-import { List } from '@ui-kitten/components';
+import React, { useCallback, useState } from 'react';
+import { View, TouchableOpacity } from 'react-native';
 import { MovieCard } from '../components/MovieCard';
-
+import DraggableFlatList, {
+    RenderItemParams,
+  } from 'react-native-draggable-flatlist';
 import moviesData from '../assets/movies.json';
 
-
 export const MoviesList:React.FC = () => {
-    const render = ({item}: ListRenderItemInfo<any>) => (
-        <MovieCard item={item}/>
-    );
+    const renderItem = useCallback(
+        ({ item, drag, isActive }: RenderItemParams<any>) => {
+          return (
+            <TouchableOpacity
+              style={{
+                backgroundColor: isActive ? 'darkgrey' : item.backgroundColor,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onLongPress={drag}>
+              <MovieCard item={item}/>
+            </TouchableOpacity>
+          );
+        },
+        []
+      );
+    const [data, setData] = useState(moviesData);
 
     return (
-        <>
-            <List contentContainerStyle={styles.productList} data={moviesData} numColumns={2} renderItem={render} />
-        </>
+        <View style={{ flex: 1 }}>
+            <DraggableFlatList
+                data={data}
+                renderItem={renderItem}
+                keyExtractor={(item) => `draggable-item-${item.id}`}
+                onDragEnd={({ data }) => setData(data)}
+            />
+      </View>
     );
 }
-
-const styles = StyleSheet.create({
-    itemHeader: {
-        maxHeight: 200,
-        height: 200,
-    },
-    productList: {
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-    },
-    productItem: {
-        flex: 1,
-        margin: 8,
-        maxWidth: Dimensions.get('window').width / 2 - 24,
-        backgroundColor: 'white',
-        borderColor: 'grey',
-    },
-});
